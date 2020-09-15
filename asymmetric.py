@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 from nacl.public import PublicKey, SealedBox
 import argparse
 
