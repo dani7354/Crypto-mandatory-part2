@@ -4,8 +4,8 @@ from nacl.utils import random
 
 
 # Key generation
-def generate_random_secret(length):
-    return random(length)
+def generate_random_secret():
+    return random(SecretBox.KEY_SIZE)
 
 
 def generate_keypair():
@@ -17,7 +17,7 @@ def generate_keypair():
 def encrypt_symmetric_key(pk_bytes):
     public_key = PublicKey(pk_bytes)
     sealed_box = SealedBox(public_key)
-    secret = generate_random_secret(32)
+    secret = generate_random_secret()
     return sealed_box.encrypt(secret), secret
 
 
@@ -31,7 +31,8 @@ def decrypt_symmetric_key(private_key, encrypted_sym_key):
 def encrypt_message(message, secret):
     message_bytes = message.encode('utf-8', 'ignore')
     secret_box = SecretBox(secret)
-    return secret_box.encrypt(message_bytes)
+    nonce = random(SecretBox.NONCE_SIZE)
+    return secret_box.encrypt(nonce=nonce, plaintext=message_bytes)
 
 
 def decrypt_message(message_bytes, secret):
